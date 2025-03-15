@@ -32,3 +32,35 @@ Para o AES-256, foram realizados testes de criptografia e descriptografia utiliz
 ### Insights Obtidos
 
 A criptografia SHA-256 é uma excelente critografia para finalidades que demandam de uma irreversabilidade sem contar com auxilio de uma chave. Apesar desse ponto, ela sempre apresenta os mesmo resultados ao se imputar um mesmo valor, o que pode demonstrar uma vulnerabilidade dela em certas aplicações. Já a criptografia AES-256 possui a chave que permite essa reversabilidade da mensagem trazendo para diversos contextos, como o da blockchain, possibilidades de comunicação e descriptografia de mensagens por chave. Ainda sim vale lembrar a vulnerabilidade de alguém descobrir a chave o que possibilitaria ela de verificar todas as mensagens e descriptografalas também.
+
+### Função de descriptografia:
+
+```py
+def aes256_decrypt(key: bytes, iv: str, ciphertext: str) -> str:
+    """
+    Descriptografa um texto criptografado com AES-256 no modo CBC.
+
+    Parâmetros:
+    - key: Chave de 32 bytes usada para descriptografia.
+    - iv: Vetor de inicialização (base64, 16 bytes).
+    - ciphertext: Texto criptografado (base64).
+
+    Retorna:
+    - Texto original descriptografado.
+    """
+    # Decodifica IV e texto criptografado de base64
+    iv = base64.b64decode(iv)
+    ciphertext = base64.b64decode(ciphertext)
+
+    # Configura o cipher AES-256 no modo CBC para descriptografar
+    cipher = AES.new(key, AES.MODE_CBC, iv)
+
+    # Descriptografa e remove o padding
+    plaintext = unpad(cipher.decrypt(ciphertext), AES.block_size)
+
+    return plaintext.decode()
+
+# Teste da função
+decrypted_text = aes256_decrypt(key, iv, ciphertext)
+print(f"Texto descriptografado: {decrypted_text}")
+```
